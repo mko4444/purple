@@ -2,7 +2,10 @@ import { User } from "@standard-crypto/farcaster-js";
 import { purpleNFTTokenAddress } from "./consts";
 import farcaster from "./farcaster";
 
-export const tap = async <T>(value: T, cb: (value: T) => Promise<unknown>): Promise<T> => {
+export const tap = async <T>(
+  value: T,
+  cb: (value: T) => Promise<unknown>
+): Promise<T> => {
   await cb(value);
   return value;
 };
@@ -34,7 +37,7 @@ export const getPurpleMembers = async () => {
     }
 
     const data = await response.json();
-    console.log("data is", data);
+
     return data.owners;
   } catch (error) {
     console.error("Error:", error);
