@@ -1,7 +1,8 @@
-import farcaster from "@standard-crypto/farcaster-js";
+import { MerkleAPIClient } from "@standard-crypto/farcaster-js";
 
 export function generateClient(secret: string) {
-  return new farcaster.MerkleAPIClient({ secret });
+  const client = new MerkleAPIClient({ secret });
+  return client;
 }
 
 export default generateClient;

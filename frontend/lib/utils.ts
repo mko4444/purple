@@ -13,7 +13,11 @@ export const tap = async <T>(
 export const getMembers = async (): Promise<(User | undefined)[]> => {
   const client = generateClient(process.env.NEXT_PUBLIC_FARCASTER_SECRET!);
   const members = await getPurpleMembers();
-  return await Promise.all(members.map(client.lookupUserByVerification));
+  return await Promise.all(
+    members.map(async (member: string) => {
+      return await client.lookupUserByVerification(member);
+    })
+  );
 };
 
 export const getPurpleMembers = async () => {
@@ -29,12 +33,13 @@ export const getPurpleMembers = async () => {
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.log("Error:", response.statusText);
+      return [];
     }
 
     const data = await response.json();
-    console.log(data);
-    return data;
+    console.log("data is", data);
+    return data.owners;
   } catch (error) {
     console.error("Error:", error);
   }
