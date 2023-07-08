@@ -1,6 +1,5 @@
-import axios from "axios";
-
 import { User } from "@standard-crypto/farcaster-js";
+import { purpleNFTTokenAddress } from "./consts";
 export const tap = async <T>(
   value: T,
   cb: (value: T) => Promise<unknown>
@@ -18,22 +17,23 @@ export const getMembers = async (
 
 export const getPurpleMembers = async () => {
   try {
-    const response = await axios({
-      method: "get",
-      url: `https://eth-mainnet.g.alchemy.com/nft/v3/${
-        process.env.NEXT_PUBLIC_ALCHEMY_API as string
-      }/getOwnersForContract`,
-      params: {
-        contractAddress: "0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60",
-        withTokenBalances: false,
-      },
-      headers: {
-        accept: "application/json",
-      },
-    });
+    const response = await fetch(
+      `https://eth-mainnet.g.alchemy.com/nft/v3/${process.env.NEXT_PUBLIC_ALCHEMY_API}/getOwnersForContract?contractAddress=${purpleNFTTokenAddress}&withTokenBalances=false`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
 
-    console.log(response.data);
-    return response.data;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data;
   } catch (error) {
     console.error("Error:", error);
   }
