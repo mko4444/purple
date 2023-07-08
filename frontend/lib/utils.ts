@@ -2,10 +2,7 @@ import { User } from "@standard-crypto/farcaster-js";
 import { purpleNFTTokenAddress } from "./consts";
 import farcaster from "./farcaster";
 
-export const tap = async <T>(
-  value: T,
-  cb: (value: T) => Promise<unknown>
-): Promise<T> => {
+export const tap = async <T>(value: T, cb: (value: T) => Promise<unknown>): Promise<T> => {
   await cb(value);
   return value;
 };

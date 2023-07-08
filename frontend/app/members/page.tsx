@@ -5,13 +5,14 @@ export default async function Members() {
   const members = await getMembers();
   console.log(members);
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div className="page">
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "1rem",
           width: "40%",
+          paddingTop: 100,
         }}
       >
         {members.filter(Boolean).map((member, index) => {
