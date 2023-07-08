@@ -1,0 +1,38 @@
+@import "mixins";
+@include flex-layout-generator();
+
+@import "../components/Header";
+
+span,
+label,
+input,
+button {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+label {
+  opacity: 0.66;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  padding: 0.5rem 0.66rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background: transparent;
+  &.filled {
+    background: #8465cc;
+    color: #fff;
+    border: none;
+  }
+}
+
+.w-100 {
+  width: 100%;
+}

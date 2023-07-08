@@ -1,0 +1,17 @@
+.header {
+  @extend .row-c-c, .w-100;
+  &--logo {
+    @extend .row-c-c;
+    gap: 0.5rem;
+    div {
+      height: 20px;
+      width: 20px;
+      background: #8465cc;
+      border-radius: 0.1rem;
+    }
+  }
+  &--inner {
+    @extend .row-sb-c, .w-100;
+    max-width: 1080px;
+  }
+}
