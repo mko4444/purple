@@ -1,5 +1,7 @@
 import { User } from "@standard-crypto/farcaster-js";
 import { purpleNFTTokenAddress } from "./consts";
+import { generateClient } from "./farcaster";
+
 export const tap = async <T>(
   value: T,
   cb: (value: T) => Promise<unknown>
@@ -8,9 +10,8 @@ export const tap = async <T>(
   return value;
 };
 
-export const getMembers = async (
-  client: any
-): Promise<(User | undefined)[]> => {
+export const getMembers = async (): Promise<(User | undefined)[]> => {
+  const client = generateClient(process.env.NEXT_PUBLIC_FARCASTER_SECRET!);
   const members = await getPurpleMembers();
   return await Promise.all(members.map(client.lookupUserByVerification));
 };
