@@ -1,10 +1,10 @@
 .header {
   @extend .row-c-c, .w-100;
-  position: sticky;
+  position: fixed;
   top: 0;
   height: 64px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  // background: rgba(255, 255, 255, 0.95);
+  // backdrop-filter: blur(10px);
 
   &--logo {
     @extend .row-c-c;

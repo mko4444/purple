@@ -1,4 +1,4 @@
-@import "mixins";
+@import "mixins", "auction";
 @include flex-layout-generator();
 
 @import "../components/Header";
@@ -34,12 +34,13 @@ a {
 button {
   @extend .row-c-c;
   padding: 0.5rem 0.66rem;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 0.5rem;
   background: transparent;
   gap: 0.5rem;
   transition: all 150ms;
   cursor: pointer;
+
   &.filled {
     background: #8465cc;
     color: #fff;
