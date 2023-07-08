@@ -1,5 +1,5 @@
 import Link from "next/link";
-import CustomConnectKitButton from "../CustomConnectKitButton";
+import SignInButton from "../SignInButton";
 
 export default function Header() {
   return (
@@ -28,11 +28,11 @@ export default function Header() {
               <button>{page}</button>
             </Link>
           ))}
-          <CustomConnectKitButton />
+          <SignInButton />
         </div>
       </div>
     </header>
   );
 }
 
-const pages = ["proposals", "members", "treasury", "jobs", "discourse", "about", "settings"];
+const pages = ["proposals", "members", "discourse", "about"];
