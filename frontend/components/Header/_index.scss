@@ -1,5 +1,11 @@
 .header {
   @extend .row-c-c, .w-100;
+  position: fixed;
+  top: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+
   &--logo {
     @extend .row-c-c;
     gap: 0.5rem;
@@ -10,8 +16,19 @@
       border-radius: 0.1rem;
     }
   }
+  &--row {
+    @extend .row-sb-c;
+    gap: 0.25rem;
+  }
   &--inner {
     @extend .row-sb-c, .w-100;
     max-width: 1080px;
+  }
+  &--buttons {
+    @extend .row-c-c;
+    gap: 0.25rem;
+  }
+  button {
+    text-transform: capitalize;
   }
 }
