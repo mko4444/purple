@@ -1,0 +1,23 @@
+.info-section {
+  @extend .w-100, .col;
+  gap: 0.5rem;
+
+  &--title {
+    @extend .flex;
+    text-align: left;
+  }
+
+  &--header {
+    @extend .w-100, .row-fs-c;
+    gap: 0.5rem;
+  }
+
+  &--children {
+    @extend .w-100, .col;
+
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+  }
+}

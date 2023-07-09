@@ -1,7 +1,12 @@
-@import "mixins", "auction";
+@import "mixins";
 @include flex-layout-generator();
 
 @import "../components/Header";
+@import "../components/Auction";
+@import "../components/Badge";
+@import "../components/OpenMarker";
+@import "../components/InfoSection";
+@import "../components/Footer";
 
 span,
 label,
@@ -25,21 +30,50 @@ html {
   font-weight: 400;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 a {
   text-decoration: none;
   border-color: inherit;
   color: inherit;
 }
 
+h1 {
+  color: #452a83;
+  opacity: 0.8;
+  font-size: 4rem;
+  margin: 0 0 0 -2px;
+  font-weight: 400;
+}
+h2 {
+  color: #452a83;
+  opacity: 0.8;
+  font-size: 2rem;
+  margin: 0 0 0 -2px;
+  font-weight: 400;
+}
+
+span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #452a83;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
 button {
   @extend .row-c-c;
   padding: 0.5rem 0.66rem;
-  border: 1px solid black;
+  border: none;
   border-radius: 0.5rem;
   background: transparent;
   gap: 0.5rem;
   transition: all 150ms;
   cursor: pointer;
+
+  background: #f5efff;
 
   &.filled {
     background: #8465cc;
@@ -50,7 +84,8 @@ button {
     }
   }
   &:hover {
-    backdrop-filter: brightness(90%);
+    filter: brightness(102.5%);
+    transform: scale(1.025);
   }
 }
 
@@ -62,4 +97,13 @@ button {
   max-width: 840px;
   margin: 0 auto;
   padding-top: 2rem;
+}
+
+.flex {
+  flex: 1;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.66;
 }

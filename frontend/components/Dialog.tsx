@@ -1,4 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import { useState } from "react";
 
 export default function DialogComponent({
   children,
@@ -17,34 +18,34 @@ export default function DialogComponent({
   backgroundStyle?: React.CSSProperties;
   disabled?: boolean;
 }) {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger disabled={disabled} style={triggerStyle} className={triggerClassName}>
         {trigger}
       </Dialog.Trigger>
-      <Dialog.Portal
-        className="col-c-c"
-        container={document.body}
+      <div
+        className="fadeIn col-c-c"
         style={{
-          background: "red",
+          pointerEvents: open ? "all" : "none",
+          width: "100vw",
+          height: "100vh",
+          top: 0,
+          left: 0,
+          position: "absolute",
+          ...backgroundStyle,
         }}
       >
-        <Dialog.Overlay />
-        <div
-          className="fadeIn col-c-c"
-          style={{ width: "100vw", height: "100vh", top: 0, left: 0, position: "absolute", ...backgroundStyle }}
+        <Dialog.Content
+          className="fadeIn"
+          style={{
+            zIndex: 1000,
+            ...style,
+          }}
         >
-          <Dialog.Content
-            className="fadeIn"
-            style={{
-              zIndex: 1000,
-              ...style,
-            }}
-          >
-            {children}
-          </Dialog.Content>
-        </div>
-      </Dialog.Portal>
+          {children}
+        </Dialog.Content>
+      </div>
     </Dialog.Root>
   );
 }

@@ -1,0 +1,12 @@
+.badge {
+  @extend .row-c-c;
+
+  height: 24px;
+  padding: 0 0.5rem;
+  background: rgba(60, 0, 255, 0.5);
+  backdrop-filter: blur(10px);
+  color: white;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}

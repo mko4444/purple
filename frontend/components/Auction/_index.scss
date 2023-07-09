@@ -16,26 +16,29 @@
     margin: 0;
   }
 
-  background: radial-gradient(100% 100% at 50% 0%, rgba(255, 244, 255, 0) 0%, rgba(251, 38, 255, 0.6) 100%),
-    linear-gradient(180deg, rgba(255, 68, 68, 0) 0%, rgba(60, 0, 255, 0.5) 100%),
-    radial-gradient(118.02% 164.92% at 50% 100%, rgba(255, 153, 0, 0) 0%, rgba(98, 0, 255, 0.487) 100%), #fffcf5;
+  background: radial-gradient(100% 100% at 50% 0%, rgba(255, 244, 255, 0) 0%, rgba(251, 38, 255, 0.33) 100%),
+    linear-gradient(180deg, rgba(255, 68, 68, 0) 0%, rgba(60, 0, 255, 0.1) 100%),
+    radial-gradient(118.02% 164.92% at 50% 100%, rgba(255, 153, 0, 0) 0%, rgba(98, 0, 255, 0.25) 100%), #fffcf5;
   background-blend-mode: soft-light, overlay, multiply, normal;
-  padding: 6rem 0 2rem 0;
+  padding: calc(64px + 4rem) 0 4rem 0;
   min-height: 480px;
   border-bottom: 1px solid #452a8309;
 
-  &--title {
-    color: #452a83;
-    opacity: 0.8;
-    font-size: 4rem;
-    margin: 0 0 0 -2px;
+  @include tabletandmobile {
+    padding: calc(64px + 2rem) 1rem 1rem 1rem;
   }
+
   &--token {
     color: white;
     font-size: 2rem;
     background: #8465cc;
     padding-top: 100%;
     border-radius: 0.66rem;
+    @include tabletandmobile {
+      width: 200px;
+      height: 200px;
+      padding: 0;
+    }
   }
   &--grid {
     @extend .w-100;
@@ -44,13 +47,23 @@
     grid-gap: 4rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
+
+    @include tabletandmobile {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
   }
   &--divider {
     height: auto;
     width: 2px;
     border-radius: 100px;
     background: #452a83;
-    opacity: 0.25;
+    opacity: 0.15;
+
+    &.vertical {
+      height: 2px;
+      width: 100%;
+    }
   }
   &--col {
     @extend .col;
@@ -94,6 +107,7 @@
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(25px);
     font-size: 1rem;
+    width: auto;
     flex: 1;
     color: #452a83;
     font-weight: 500;
@@ -105,13 +119,29 @@
       font-size: 1rem;
     }
   }
-  &--bid-button {
-    font-size: 1rem;
-    background: #8465cc;
-    padding: 0.66rem 1rem;
-    white-space: nowrap;
-    border: none;
-    color: white;
+  &--bid {
+    @extend .row-fs-c, .w-100;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+
+    * {
+      pointer-events: none;
+    }
+
+    &:hover {
+      background: #452a8315;
+    }
+
+    &-button {
+      font-size: 1rem;
+      background: #8465cc;
+      padding: 0.66rem 1rem;
+      white-space: nowrap;
+      border: none;
+      color: white;
+    }
   }
   &--info {
     @extend .col;

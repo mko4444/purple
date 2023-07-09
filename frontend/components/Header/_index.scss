@@ -5,6 +5,7 @@
   height: 64px;
   // background: rgba(255, 255, 255, 0.95);
   // backdrop-filter: blur(10px);
+  z-index: 99999;
 
   &--logo {
     @extend .row-c-c;
