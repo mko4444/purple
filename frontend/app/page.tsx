@@ -8,9 +8,6 @@ import { londrina } from "@/util/fonts";
 import { useState } from "react";
 import InfoSection from "@/components/InfoSection";
 
-const address = "0x43790fe6bd46b210eb27F01306C1D3546AEB8C1b";
-const chainId = 1;
-
 export default function Page() {
   const [openTab, setOpenTab] = useState<string | null>(null);
 
