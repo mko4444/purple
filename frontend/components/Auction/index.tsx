@@ -101,19 +101,7 @@ export default function Auction({}: {}) {
               <button
                 disabled={isEnded}
                 onClick={async () => {
-                  if (!isConnected) {
-                    setDialogOpen(true);
-                  } else {
-                    console.log("bid", currentBid);
-                    const tx = await bidOnToken(
-                      utils.parseEther(currentBid.toString()),
-                      currentToken.tokenId,
-                      address as string
-                    );
-                    if (tx) {
-                      console.log(tx);
-                    }
-                  }
+                  console.log("bid", currentBid);
                 }}
                 className="auction--bid-button"
               >
@@ -123,7 +111,7 @@ export default function Auction({}: {}) {
             <div />
             <div className="auction--col w-100" style={{ gap: ".33rem" }}>
               {currentToken.auction ? (
-                currentToken.auction.bids.map((bid, index) => {
+                currentToken.auction.bids.map((bid: any) => {
                   return (
                     <div className="w-100">
                       <div className="auction--bid">
