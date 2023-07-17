@@ -3,7 +3,7 @@ import { getMembers } from "@/lib/utils";
 
 export default async function Members() {
   const members = await getMembers();
-  console.log(members);
+
   return (
     <div className="page">
       <div

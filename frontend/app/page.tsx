@@ -13,29 +13,38 @@ const chainId = 1;
 
 export default function Page() {
   const { tokenId } = useParams();
-  const { data } = useContractRead({ address, abi, functionName: "auction", chainId });
+  const { data } = useContractRead({
+    address,
+    abi,
+    functionName: "auction",
+    chainId,
+  });
   const currentId = tokenId ?? data?.[0]?.toString() ?? 0;
   const [openTab, setOpenTab] = useState<string | null>(null);
 
   return (
     <div className="w-100 col-fs-c">
-      <Auction
-        tokenId={currentId}
-        isLastToken={!tokenId}
-        endTime={data?.[4] ?? 0}
-        onEnd={() => console.log("auction ended!")}
-      />
-      <div className="page w-100 col" style={{ padding: "4rem 1rem", gap: ".5rem", maxWidth: 640 }}>
+      <Auction />
+      <div
+        className="page w-100 col"
+        style={{ padding: "4rem 1rem", gap: ".5rem", maxWidth: 640 }}
+      >
         <h1 style={londrina.style}>Wtf?</h1>
         <div />
         <span>
-          Purple is a DAO whose goal is to proliferate and expand the Farcaster protocol and ecosystem. We will fund
-          small grants via Prop House and larger on-chain proposals which proliferate Farcaster and/or build on top of
-          the protocol.
+          Purple is a DAO whose goal is to proliferate and expand the Farcaster
+          protocol and ecosystem. We will fund small grants via Prop House and
+          larger on-chain proposals which proliferate Farcaster and/or build on
+          top of the protocol.
         </span>
         <div />
         <div />
-        <InfoSection title="How do I participate?" tabId="participate" openTab={openTab} setOpenTab={setOpenTab}>
+        <InfoSection
+          title="How do I participate?"
+          tabId="participate"
+          openTab={openTab}
+          setOpenTab={setOpenTab}
+        >
           {[
             "There are two levels of participation: DAO Members & the Purple Community.",
             "You become a DAO Member by purchasing a Purple token at Auction. DAO members have a governance vote, can submit proposals, and can vote on Prop House grants.",
@@ -48,7 +57,12 @@ export default function Page() {
             </>
           ))}
         </InfoSection>
-        <InfoSection title="Summary" tabId="summary" openTab={openTab} setOpenTab={setOpenTab}>
+        <InfoSection
+          title="Summary"
+          tabId="summary"
+          openTab={openTab}
+          setOpenTab={setOpenTab}
+        >
           {[
             "Purples artwork is based on Farcaster purple.",
             "One Purple token is auctioned off every 24 hours, forever.",
@@ -68,7 +82,12 @@ export default function Page() {
             </>
           ))}
         </InfoSection>
-        <InfoSection title="How do auctions work?" tabId="auctions" openTab={openTab} setOpenTab={setOpenTab}>
+        <InfoSection
+          title="How do auctions work?"
+          tabId="auctions"
+          openTab={openTab}
+          setOpenTab={setOpenTab}
+        >
           {[
             "Once the auction was started on October 25, 2022, it will run forever. A new Purple token is put up for auction every 24 hours.",
             "100% of auction sales go to the DAO Treasury and is governed by the community",
@@ -95,7 +114,12 @@ export default function Page() {
             </>
           ))}
         </InfoSection>
-        <InfoSection title="Governance Slow Start" tabId="governance" openTab={openTab} setOpenTab={setOpenTab}>
+        <InfoSection
+          title="Governance Slow Start"
+          tabId="governance"
+          openTab={openTab}
+          setOpenTab={setOpenTab}
+        >
           {[
             "PurpDAO.eth have given themselves a special veto right to ensure that no malicious proposals can be passed while the Purple supply is low. This veto right will only be used if an obviously harmful governance proposal has been passed, and is intended as a last resort.",
             "Purple will revoke this veto right when they deem it safe to do so. This decision will be based on a healthy Purple distribution and a community that is engaged in the governance process.",
