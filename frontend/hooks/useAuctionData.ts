@@ -1,14 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { getDefaultProvider } from "ethers";
-import { BuilderSDK } from "@buildersdk/sdk";
 import { auctionHouseContractAddress } from "@/lib/consts";
-import {
-  getAuction,
-  getGraphOwnerAddress,
-  getNumberOfOwnedTokens,
-} from "@/lib/utils";
+import { getAuction, getNumberOfOwnedTokens } from "@/lib/utils";
 import farcaster from "./../lib/farcaster";
-
 import { BigNumber, utils } from "ethers";
 import abbreviateAddress from "@/util/abbreviateAddress";
 
@@ -39,7 +32,7 @@ export const useAuctionData = () => {
     if (curr === auctionData.length - 1) {
       setCurrentToken(auctionData[0]);
     } else {
-      setCurrentToken(auctionData[curr - 1]);
+      setCurrentToken(auctionData[curr + 1]);
     }
   };
 
@@ -130,11 +123,14 @@ export const useAuctionData = () => {
           }
         })
       );
-
       setAuctionData(tokens);
-      setCurrentToken(tokens[0]);
+      const currentToken = tokens[0];
+
+      setCurrentToken(currentToken);
+      setLoading(false);
     } catch (e) {
       console.log("error", e);
+      setLoading(false);
     }
     setLoading(false);
   }, [auctionHouseContractAddress]);

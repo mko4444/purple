@@ -1,8 +1,5 @@
 "use client";
 
-import { auctionAbi as abi } from "data/contract/abis";
-import { useContractRead } from "wagmi";
-import { useParams } from "next/navigation";
 import Auction from "@/components/Auction";
 import { londrina } from "@/util/fonts";
 import { useState } from "react";
