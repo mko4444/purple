@@ -8,7 +8,6 @@ type PurpleMemberProps = {
 };
 
 const PurpleMember: React.FC<PurpleMemberProps> = ({ member }) => {
-  console.log(member);
   return (
     member && (
       <button
