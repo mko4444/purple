@@ -1,0 +1,39 @@
+.activity-row-item {
+  @extend .row-fs-c, .w-100;
+  gap: 1rem;
+  padding: 1rem 0.66rem;
+  cursor: pointer;
+  border-bottom: 1px solid #452a8325;
+
+  &:first-child {
+    border-top: 1px solid #452a8325;
+  }
+  &:hover {
+    background: #f5efff50;
+  }
+  span {
+    opacity: 1;
+  }
+  &--icon {
+    @extend .col-c-c;
+
+    height: 36px;
+    width: 36px;
+    border-radius: 100px;
+    background: #f5efff;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+  }
+  &--text {
+    @extend .row-sb-c;
+    flex: 1;
+
+    @include mobile {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}
