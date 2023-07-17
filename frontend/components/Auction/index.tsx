@@ -1,6 +1,6 @@
 import { arrowLeft, arrowRight } from "@/svg";
 import day from "lib/day";
-import * as auctionAbi from "./../../data/contract/abis/Auction.json";
+
 import { useAccount, useConnect, useContractWrite } from "wagmi";
 import { useCountdown } from "@/hooks/useCountdown";
 
