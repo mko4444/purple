@@ -16,7 +16,6 @@ export default function Auction({}: {}) {
   const [auctionData, currentToken, loading, incrementToken, decrementToken] =
     useAuctionData();
   const [endTime, setEndTime] = useState<number>(0);
-  //TODO
   const { countdownString, isEnded } = useCountdown(endTime, () => {});
 
   useEffect(() => {
