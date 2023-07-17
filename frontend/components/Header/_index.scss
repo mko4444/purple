@@ -19,7 +19,7 @@
   }
   &--row {
     @extend .row-sb-c;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
   &--inner {
     @extend .row-sb-c, .w-100;

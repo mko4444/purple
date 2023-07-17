@@ -1,5 +1,5 @@
 .auction {
-  @extend .w-100, .row-c-c;
+  @extend .w-100, .row-c-c, .gradient;
 
   label {
     font-size: 1rem;
@@ -16,10 +16,6 @@
     margin: 0;
   }
 
-  background: radial-gradient(100% 100% at 50% 0%, rgba(255, 244, 255, 0) 0%, rgba(251, 38, 255, 0.33) 100%),
-    linear-gradient(180deg, rgba(255, 68, 68, 0) 0%, rgba(60, 0, 255, 0.1) 100%),
-    radial-gradient(118.02% 164.92% at 50% 100%, rgba(255, 153, 0, 0) 0%, rgba(98, 0, 255, 0.25) 100%), #fffcf5;
-  background-blend-mode: soft-light, overlay, multiply, normal;
   padding: calc(64px + 4rem) 0 4rem 0;
   min-height: 480px;
   border-bottom: 1px solid #452a8309;
@@ -63,6 +59,7 @@
     &.vertical {
       height: 2px;
       width: 100%;
+      margin: 0.5rem 0;
     }
   }
   &--col {

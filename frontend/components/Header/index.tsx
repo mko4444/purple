@@ -49,7 +49,7 @@ export default function Header() {
         </div>
         <div className="header--row">
           {pages.map((page) => (
-            <Link href={page}>
+            <Link href={page.toLowerCase()}>
               <button>{page}</button>
             </Link>
           ))}
@@ -60,4 +60,4 @@ export default function Header() {
   );
 }
 
-const pages = ["proposals", "members", "discourse", "about"];
+const pages = ["DAO", "Members", "Discourse", "About"];
