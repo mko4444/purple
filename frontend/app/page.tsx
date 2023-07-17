@@ -12,14 +12,6 @@ const address = "0x43790fe6bd46b210eb27F01306C1D3546AEB8C1b";
 const chainId = 1;
 
 export default function Page() {
-  const { tokenId } = useParams();
-  const { data } = useContractRead({
-    address,
-    abi,
-    functionName: "auction",
-    chainId,
-  });
-  const currentId = tokenId ?? data?.[0]?.toString() ?? 0;
   const [openTab, setOpenTab] = useState<string | null>(null);
 
   return (
