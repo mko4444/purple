@@ -11,7 +11,6 @@ export default async function Members() {
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "1rem",
-          width: "40%",
           paddingTop: 100,
         }}
       >
