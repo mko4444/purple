@@ -107,3 +107,12 @@ button {
   pointer-events: none;
   opacity: 0.66;
 }
+
+.line-1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+}
