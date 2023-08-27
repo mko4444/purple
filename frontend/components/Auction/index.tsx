@@ -1,110 +1,155 @@
 import { arrowLeft, arrowRight } from "@/svg";
 import day from "lib/day";
-import { auctionAbi as abi } from "data/contract/abis";
-import { useContractRead } from "wagmi";
+
+import { useAccount, useConnect, useContractWrite } from "wagmi";
 import { useCountdown } from "@/hooks/useCountdown";
-import { useParams } from "next/navigation";
-import Link from "next/link";
+
 import Image from "next/image";
 import Badge from "@/components/Badge";
 import { londrina } from "@/util/fonts";
-import classNames from "classnames";
 
-export default function Auction({
-  tokenId,
-  isLastToken = false,
-  endTime,
-  onEnd = () => {},
-}: {
-  tokenId: string;
-  isLastToken?: boolean;
-  endTime: number;
-  onEnd?: () => void;
-}) {
-  const { countdownString } = useCountdown(endTime, onEnd);
+import { useAuctionData } from "@/hooks/useAuctionData";
+import { useEffect, useState } from "react";
+
+import Dialog from "../Dialog";
+import { ConnectKitButton } from "connectkit";
+import LoadingIndicator from "../LoadingIndicator.tsx";
+
+export default function Auction({}: {}) {
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [auctionData, currentToken, loading, incrementToken, decrementToken] = useAuctionData();
+  const { address, isConnected } = useAccount();
+  const [endTime, setEndTime] = useState<number>(0);
+  const { countdownString, isEnded } = useCountdown(endTime, () => {});
+  const [currentBid, setCurrentBid] = useState<number>(0);
+
+  useEffect(() => {
+    if (currentToken && currentToken.auction) {
+      setEndTime(parseInt(currentToken.auction.endTime, 10));
+    }
+  }, [currentToken]);
+
   return (
     <div className="auction">
-      <div className="auction--grid">
-        <div className="auction--token" />
-        <div className="auction--info">
-          <div className="auction--row">
-            <Link href={`/${parseInt(tokenId, 10) - 1}`}>
-              <button className="auction--nav-button">{arrowLeft}</button>
-            </Link>
-            <Link
-              className={classNames({
-                disabled: isLastToken,
-              })}
-              href={`/${parseInt(tokenId, 10) + 1}`}
-            >
-              <button className="auction--nav-button">{arrowRight}</button>
-            </Link>
+      {!loading && currentToken ? (
+        <div className="auction--grid">
+          <div className="auction--token" />
+          <div className="auction--info">
+            <div className="auction--row">
+              <button
+                onClick={() => {
+                  decrementToken();
+                }}
+                className="auction--nav-button"
+              >
+                {arrowLeft}
+              </button>
+
+              <button
+                onClick={() => {
+                  incrementToken();
+                }}
+                className="auction--nav-button"
+              >
+                {arrowRight}
+              </button>
+
+              <div />
+              <label>{day().format("MMM Do, YYYY")}</label>
+            </div>
+            <h1 className="auction--title" style={londrina.style}>
+              Purple #{currentToken.tokenId}
+            </h1>
             <div />
-            <label>{day().format("MMM Do, YYYY")}</label>
-          </div>
-          <h1 className="auction--title" style={londrina.style}>
-            Purple #{tokenId}
-          </h1>
-          <div />
-          <div />
-          <div className="auction--row w-100">
-            <div className="auction--col flex">
-              <label>Current bid</label>
-              <h4>Ξ 100</h4>
+            <div />
+            <div className="auction--row w-100">
+              <div className="auction--col flex">
+                <label>Current bid</label>
+                <h4>Ξ {currentToken.auction ? currentToken.auction.highestBid.amount : 0}</h4>
+              </div>
+              <div />
+              <div />
+              <div className="auction--divider" style={{ height: 52 }} />
+              <div />
+              <div />
+              <div className="auction--col flex">
+                <label>Auction ends in</label>
+                <h4>{isEnded ? "---" : countdownString}</h4>
+              </div>
             </div>
             <div />
             <div />
-            <div className="auction--divider" style={{ height: 52 }} />
+            <div className="auction--row w-100">
+              <input
+                value={currentBid}
+                onChange={(e: any) => {
+                  console.log(e.target.value);
+                  setCurrentBid(e.target.value);
+                }}
+                type="number"
+                className="auction--input"
+                placeholder="1"
+              />
+              <button
+                disabled={isEnded}
+                onClick={async () => {
+                  console.log("bid", currentBid);
+                }}
+                className="auction--bid-button"
+              >
+                Place Bid
+              </button>
+            </div>
             <div />
-            <div />
-            <div className="auction--col flex">
-              <label>Auction ends in</label>
-              <h4>{countdownString ?? "---"}</h4>
-            </div>
-          </div>
-          <div />
-          <div />
-          <div className="auction--row w-100">
-            <input className="auction--input" placeholder="1" />
-            <button className="auction--bid-button">Place Bid</button>
-          </div>
-          <div />
-          <div className="auction--col w-100" style={{ gap: ".33rem" }}>
-            <div className="auction--bid">
-              <Image height={24} width={24} src="/placeholder.png" alt="user" style={{ borderRadius: 100 }} />
-              <span>Matthew</span>
-              <label>@matthew</label>
-              <Badge>⨉ 5</Badge>
-              <div className="flex" />
-              <b>
-                <span>Ξ 1</span>
-              </b>
-            </div>
-            <div className="auction--divider vertical" />
-            <div className="auction--bid">
-              <Image height={24} width={24} src="/placeholder.png" alt="user" style={{ borderRadius: 100 }} />
-              <span>Kevin</span>
-              <label>@kevinoconnell</label>
-              <Badge>⨉ 3</Badge>
-              <div className="flex" />
-              <b>
-                <span>Ξ .5</span>
-              </b>
-            </div>
-            <div className="auction--divider vertical" />
-            <div className="auction--bid">
-              <Image height={24} width={24} src="/placeholder.png" alt="user" style={{ borderRadius: 100 }} />
-              <span>Chris</span>
-              <label>@ccarella</label>
-              <Badge>⨉ 17</Badge>
-              <div className="flex" />
-              <b>
-                <span>Ξ .33</span>
-              </b>
+            <div className="auction--col w-100" style={{ gap: ".33rem" }}>
+              {currentToken.auction ? (
+                currentToken.auction.bids.map((bid: any) => {
+                  return (
+                    <div className="w-100">
+                      <div className="auction--bid">
+                        <Image
+                          height={24}
+                          width={24}
+                          src={bid.username.pfp.url}
+                          alt="user"
+                          style={{ borderRadius: 100 }}
+                        />
+                        <span>{bid.username.displayName}</span>
+                        <label>@{bid.username.username}</label>
+                        <Badge>⨉ {bid.ownedTokens}</Badge>
+                        <div className="flex" />
+                        <b>
+                          <span>Ξ {bid.amount}</span>
+                        </b>
+                      </div>
+                      <div className="auction--divider vertical" />
+                    </div>
+                  );
+                })
+              ) : (
+                <p>{!isEnded ? "No bids yet!" : "There were no bids today."}</p>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      ) : loading ? (
+        <LoadingIndicator />
+      ) : null}
+      {dialogOpen ? (
+        <Dialog
+          style={{
+            height: 280,
+            width: 280,
+            borderRadius: "1rem",
+            padding: "1rem",
+          }}
+          trigger="Connect Wallet"
+          triggerClassName="filled"
+          disabled={isConnected}
+        >
+          <ConnectKitButton />
+        </Dialog>
+      ) : null}
     </div>
   );
 }

@@ -1,7 +1,25 @@
+"use client";
 import Link from "next/link";
 import SignInButton from "../SignInButton";
+import { useBalance } from "wagmi";
+import { treasuryAddress } from "@/lib/consts";
+import { utils } from "ethers";
+import { useState, useEffect } from "react";
 
 export default function Header() {
+  const { data } = useBalance({ address: treasuryAddress });
+  const [balance, setBalance] = useState("0");
+  useEffect(() => {
+    if (data) {
+      let numStr = utils.formatUnits(data.value, data.decimals);
+
+      // Parse the number string to a JavaScript number
+      let num = parseFloat(numStr);
+      let roundedNum = num.toFixed(3);
+      setBalance(roundedNum);
+    }
+  }, [data]);
+
   return (
     <header className="header">
       <div className="header--inner">
@@ -12,10 +30,17 @@ export default function Header() {
           </Link>
           <div />
           <div />
-          <button>
+          <button
+            onClick={() => {
+              window.open(
+                `https://etherscan.io/address/0xeB5977F7630035fe3b28f11F9Cb5be9F01A9557D`,
+                "_blank"
+              );
+            }}
+          >
             <label>Treasury</label>
             <span>
-              1,000 ETH
+              {balance} ETH
               {
                 // TODO: Treasury balance
               }

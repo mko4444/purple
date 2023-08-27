@@ -1,20 +1,14 @@
 import PurpleMember from "@/components/Member/PurpleMember";
 import { getMembers } from "@/lib/utils";
+import { londrina } from "@/util/fonts";
 
 export default async function Members() {
   const members = await getMembers();
-  console.log(members);
+
   return (
-    <div className="page">
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "1rem",
-          width: "40%",
-          paddingTop: 100,
-        }}
-      >
+    <div className="members">
+      <h1 style={londrina.style}>Members</h1>
+      <div className="members--grid">
         {members.filter(Boolean).map((member, index) => {
           return member ? <PurpleMember key={index} member={member} /> : null;
         })}
