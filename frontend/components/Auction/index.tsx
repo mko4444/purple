@@ -13,15 +13,22 @@ import { useEffect, useState } from "react";
 
 import Dialog from "../Dialog";
 import { ConnectKitButton } from "connectkit";
-import { bidOnToken } from "@/lib/utils";
 import { utils } from "ethers";
 import LoadingIndicator from "../LoadingIndicator.tsx";
+import {
+  createBid,
+  settleCurrentAndCreateNewAuction,
+} from "@/lib/builderDAOMethods";
 
 export default function Auction({}: {}) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [auctionData, currentToken, loading, incrementToken, decrementToken] =
     useAuctionData();
-  const { address, isConnected } = useAccount();
+
+  const { connector: activeConnector, isConnected, address } = useAccount();
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect();
+
   const [endTime, setEndTime] = useState<number>(0);
   const { countdownString, isEnded } = useCountdown(endTime, () => {});
   const [currentBid, setCurrentBid] = useState<number>(0);
@@ -99,9 +106,35 @@ export default function Auction({}: {}) {
                 placeholder="1"
               />
               <button
-                disabled={isEnded}
+                disabled={
+                  isEnded || !currentToken
+                  //||
+                  // (currentToken.auction &&
+                  //   currentToken.auction.highestBid &&
+                  //   currentToken.auction.highestBid.amount &&
+                  //   currentBid <= currentToken.auction.highestBid.amount)
+                }
                 onClick={async () => {
                   console.log("bid", currentBid);
+                  console.log("address", address);
+                  console.log("tokenId", currentToken.tokenId);
+                  if (!address) {
+                    connect({ connector: connectors[0] });
+                  } else {
+                    if (false) {
+                      const bid = await createBid(
+                        address as string,
+                        currentBid,
+                        currentToken.tokenId
+                      );
+                      console.log("bid", bid);
+                    } else {
+                      const settle = await settleCurrentAndCreateNewAuction(
+                        address as string
+                      );
+                      console.log("settle", settle);
+                    }
+                  }
                 }}
                 className="auction--bid-button"
               >
