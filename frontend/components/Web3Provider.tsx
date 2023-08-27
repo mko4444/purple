@@ -3,14 +3,68 @@
 import { SiweMessage } from "siwe";
 import { APP_NAME } from "@/lib/consts";
 import { FC, PropsWithChildren } from "react";
-import { WagmiConfig, createConfig } from "wagmi";
-import { ConnectKitProvider, SIWEConfig, SIWEProvider, getDefaultConfig } from "connectkit";
+import { Chain, WagmiConfig, createConfig, mainnet } from "wagmi";
+import {
+  ConnectKitProvider,
+  SIWEConfig,
+  SIWEProvider,
+  getDefaultConfig,
+} from "connectkit";
+
+type RpcUrls = string[];
+type BlockExplorer = string;
+
+const MAINNET_RPC_URL = process.env.NEXT_PUBLIC_ALCHEMY_API_HTTP;
+const GOERLI_RPC_URL = process.env.NEXT_PUBLIC_ALCHEMY_API_TESTNET_HTTP;
+
+const GOERLI_CHAIN: Chain = {
+  id: 5,
+  name: "Goerli",
+  network: "goerli",
+  nativeCurrency: {
+    symbol: "ETH",
+    name: "Ether",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: [GOERLI_RPC_URL as string],
+    },
+    public: {
+      http: [GOERLI_RPC_URL as string],
+    },
+  },
+  testnet: true,
+};
+
+const MAINNET_CHAIN: Chain = {
+  id: 1,
+  name: "Mainnet",
+  network: "mainnet",
+  nativeCurrency: {
+    symbol: "ETH",
+    name: "Ether",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: [MAINNET_RPC_URL as string],
+    },
+    public: {
+      http: [MAINNET_RPC_URL as string],
+    },
+  },
+};
+
+const selectedChain =
+  process.env.IS_TEST === "true" ? GOERLI_CHAIN : MAINNET_CHAIN;
 
 const config = createConfig(
   getDefaultConfig({
     appName: APP_NAME,
     infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
+    chains: [MAINNET_CHAIN, GOERLI_CHAIN],
   })
 );
 
