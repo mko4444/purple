@@ -13,14 +13,11 @@ import { useEffect, useState } from "react";
 
 import Dialog from "../Dialog";
 import { ConnectKitButton } from "connectkit";
-import { bidOnToken } from "@/lib/utils";
-import { utils } from "ethers";
 import LoadingIndicator from "../LoadingIndicator.tsx";
 
 export default function Auction({}: {}) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [auctionData, currentToken, loading, incrementToken, decrementToken] =
-    useAuctionData();
+  const [auctionData, currentToken, loading, incrementToken, decrementToken] = useAuctionData();
   const { address, isConnected } = useAccount();
   const [endTime, setEndTime] = useState<number>(0);
   const { countdownString, isEnded } = useCountdown(endTime, () => {});
@@ -68,12 +65,7 @@ export default function Auction({}: {}) {
             <div className="auction--row w-100">
               <div className="auction--col flex">
                 <label>Current bid</label>
-                <h4>
-                  Ξ{" "}
-                  {currentToken.auction
-                    ? currentToken.auction.highestBid.amount
-                    : 0}
-                </h4>
+                <h4>Ξ {currentToken.auction ? currentToken.auction.highestBid.amount : 0}</h4>
               </div>
               <div />
               <div />
@@ -90,7 +82,7 @@ export default function Auction({}: {}) {
             <div className="auction--row w-100">
               <input
                 value={currentBid}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   console.log(e.target.value);
                   setCurrentBid(e.target.value);
                 }}

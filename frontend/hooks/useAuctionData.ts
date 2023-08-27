@@ -39,7 +39,7 @@ export const useAuctionData = () => {
   const fetchAuctionData = useCallback(async () => {
     setLoading(true);
     try {
-      let purpleInfo = await getAuction();
+      let purpleInfo: any = await getAuction();
       let tokens = purpleInfo.tokens;
       let owners = purpleInfo.owners;
       //convert bid amounts to eth
@@ -52,20 +52,12 @@ export const useAuctionData = () => {
             if (auction.highestBid && auction.highestBid.amount) {
               let bid = BigNumber.from(auction.highestBid.amount);
               auction.highestBid.amount = utils.formatEther(bid);
-              const ownedTokens = getNumberOfOwnedTokens(
-                auction.highestBid.bidder.toLowerCase(),
-                owners
-              );
+              const ownedTokens = getNumberOfOwnedTokens(auction.highestBid.bidder.toLowerCase(), owners);
               auction.highestBid.ownedTokens = ownedTokens;
               try {
-                auction.highestBid.username =
-                  await farcaster.lookupUserByVerification(
-                    auction.highestBid.bidder
-                  );
+                auction.highestBid.username = await farcaster.lookupUserByVerification(auction.highestBid.bidder);
                 if (!auction.highestBid.username) {
-                  let bidderUsername = abbreviateAddress(
-                    auction.highestBid.bidder
-                  );
+                  let bidderUsername = abbreviateAddress(auction.highestBid.bidder);
                   auction.highestBid.username = {
                     pfp: { url: token.image },
                     username: bidderUsername,
@@ -86,16 +78,11 @@ export const useAuctionData = () => {
                 auction.bids.map(async (bid: any) => {
                   let bidAmount = BigNumber.from(bid.amount);
                   bid.amount = utils.formatEther(bidAmount);
-                  const ownedTokens = getNumberOfOwnedTokens(
-                    bid.bidder.toLowerCase(),
-                    owners
-                  );
+                  const ownedTokens = getNumberOfOwnedTokens(bid.bidder.toLowerCase(), owners);
 
                   bid.ownedTokens = ownedTokens;
                   try {
-                    bid.username = await farcaster.lookupUserByVerification(
-                      bid.bidder
-                    );
+                    bid.username = await farcaster.lookupUserByVerification(bid.bidder);
                     if (!bid.username) {
                       let bidder = abbreviateAddress(bid.bidder);
                       bid.username = {
