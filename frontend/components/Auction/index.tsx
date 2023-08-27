@@ -1,3 +1,5 @@
+"use client";
+
 import { arrowLeft, arrowRight } from "@/svg";
 import day from "lib/day";
 
@@ -14,26 +16,31 @@ import { useEffect, useState } from "react";
 import Dialog from "../Dialog";
 import { ConnectKitButton } from "connectkit";
 import LoadingIndicator from "../LoadingIndicator.tsx";
+import dayjs from "lib/day";
 
-export default function Auction({}: {}) {
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [auctionData, currentToken, loading, incrementToken, decrementToken] = useAuctionData();
-  const { address, isConnected } = useAccount();
-  const [endTime, setEndTime] = useState<number>(0);
+export default function Auction({ tokenId }: { tokenId?: number }) {
+  const [dialogOpen] = useState<boolean>(false);
+  const { auction, isValidating, decrementToken, incrementToken } = useAuctionData(tokenId);
+  const { isConnected } = useAccount();
+  const endTime = auction?.endTime;
   const { countdownString, isEnded } = useCountdown(endTime, () => {});
   const [currentBid, setCurrentBid] = useState<number>(0);
 
-  useEffect(() => {
-    if (currentToken && currentToken.auction) {
-      setEndTime(parseInt(currentToken.auction.endTime, 10));
-    }
-  }, [currentToken]);
+  const currentDay = dayjs()
+    .day(23)
+    .month(10)
+    .year(2022)
+    .add(auction?.tokenId ?? tokenId, "day");
+  const todaysDate = dayjs();
+  const isToday = dayjs(currentDay).format("MMM Do, YYYY") === dayjs(todaysDate).format("MMM Do, YYYY");
 
   return (
     <div className="auction">
-      {!loading && currentToken ? (
+      {!isValidating && auction ? (
         <div className="auction--grid">
-          <div className="auction--token" />
+          <div>
+            <div className="auction--token" />
+          </div>
           <div className="auction--info">
             <div className="auction--row">
               <button
@@ -44,28 +51,34 @@ export default function Auction({}: {}) {
               >
                 {arrowLeft}
               </button>
-
               <button
                 onClick={() => {
                   incrementToken();
                 }}
                 className="auction--nav-button"
+                style={
+                  isToday
+                    ? {
+                        pointerEvents: "none",
+                        opacity: 0.5,
+                      }
+                    : {}
+                }
               >
                 {arrowRight}
               </button>
-
               <div />
-              <label>{day().format("MMM Do, YYYY")}</label>
+              <label>{day(currentDay).format("MMM Do, YYYY")}</label>
             </div>
             <h1 className="auction--title" style={londrina.style}>
-              Purple #{currentToken.tokenId}
+              Purple #{auction.tokenId ?? tokenId}
             </h1>
             <div />
             <div />
             <div className="auction--row w-100">
               <div className="auction--col flex">
                 <label>Current bid</label>
-                <h4>Ξ {currentToken.auction ? currentToken.auction.highestBid.amount : 0}</h4>
+                <h4>Ξ {auction ? auction.highestBid.amount : 0}</h4>
               </div>
               <div />
               <div />
@@ -102,28 +115,31 @@ export default function Auction({}: {}) {
             </div>
             <div />
             <div className="auction--col w-100" style={{ gap: ".33rem" }}>
-              {currentToken.auction ? (
-                currentToken.auction.bids.map((bid: any) => {
+              {auction ? (
+                auction.bids.map((bid: any, i: number) => {
                   return (
-                    <div className="w-100">
-                      <div className="auction--bid">
+                    <>
+                      {i > 0 && <div key={`divider-${i}`} className="auction--divider vertical" />}
+                      <div key={`bid-${i}`} className="auction--bid">
                         <Image
                           height={24}
                           width={24}
-                          src={bid.username.pfp.url}
+                          src={bid.user.pfp.url ?? "/placeholder.png"}
                           alt="user"
                           style={{ borderRadius: 100 }}
                         />
-                        <span>{bid.username.displayName}</span>
-                        <label>@{bid.username.username}</label>
-                        <Badge>⨉ {bid.ownedTokens}</Badge>
+                        <span>{bid.user.displayName}</span>
+                        {bid.user.username !== bid.user.displayName && <label>@{bid.user.username}</label>}
+                        {bid.ownedTokens > 0 && <Badge>⨉ {bid.ownedTokens}</Badge>}
+                        {isEnded && i === 0 && (
+                          <Badge style={{ backgroundColor: "white", color: "#452a83" }}>Winner</Badge>
+                        )}
                         <div className="flex" />
                         <b>
-                          <span>Ξ {bid.amount}</span>
+                          <span style={{ whiteSpace: "nowrap" }}>Ξ {bid.amount}</span>
                         </b>
                       </div>
-                      <div className="auction--divider vertical" />
-                    </div>
+                    </>
                   );
                 })
               ) : (
@@ -132,7 +148,7 @@ export default function Auction({}: {}) {
             </div>
           </div>
         </div>
-      ) : loading ? (
+      ) : isValidating ? (
         <LoadingIndicator />
       ) : null}
       {dialogOpen ? (

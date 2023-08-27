@@ -3,6 +3,7 @@ import { DAOAddress, nounsBuilderGraphURL } from "./consts";
 
 import farcaster from "./farcaster";
 import abbreviateAddress from "@/util/abbreviateAddress";
+import { BigNumber, utils } from "ethers";
 
 interface FarcasterUser {
   id: string;
@@ -54,55 +55,83 @@ export const getEns = async (address: `0x${string}`) => {
   return fetch(`https://ensdata.net/${address.toLowerCase()}`).then((res) => res.json());
 };
 
-export const getAuction = async () => {
-  const query = `{
-      dao(id: "${DAOAddress}") {
-        id
-        owners(orderBy: daoTokenCount, orderDirection: desc) {
-          id
-          daoTokenCount
-        }
-        tokens(orderBy: tokenId, orderDirection: desc, first: 10) {
-           tokenId
-          id
-          name
-          image
-       auction {
-          id
-          highestBid {
-            id
-            bidder
-            bidTime
-            amount
-          }
-          startTime
-           settled
-          endTime
-          bids(orderBy: amount, orderDirection: desc) {
-            id
-            bidder
-            amount
-            bidTime
-          }
-        }
-        }
-      }
-      }`;
-  const res = await fetch(nounsBuilderGraphURL, {
+type Bid = {
+  amount: string;
+  bidTime: string;
+  bidder: `0x${string}`;
+  id: `${string}:${string}`;
+  user?: any;
+  ownedTokens?: number;
+};
+
+export const getAuction = async (tokenId?: number) => {
+  const body = JSON.stringify({ query: query(tokenId) });
+  // call the subgraph
+  const auctions = await fetch(nounsBuilderGraphURL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query }),
-  });
-  const auctions = await res.json();
+    body,
+  }).then((r) => r.json());
 
-  if (!auctions || !auctions.data || !auctions.data.dao) return [];
+  // parse the data
+  const { auction, ...data } = auctions?.data?.dao?.tokens?.[0] ?? null;
+  const owners = auctions?.data?.dao?.owners ?? null;
+  // if there is no auction, return null
+  if (!auction) return null;
+  // format the bids
+  const bids = await Promise.all(auction.bids.map((b: Bid) => getBid(b, owners)));
+  // format the highest bid
+  const highestBid = await getBid(auction.highestBid, owners);
+  // return the auction data
 
-  const token = auctions.data.dao.tokens;
-
-  return { tokens: token, owners: auctions.data.dao.owners };
+  return {
+    ...data,
+    ...auction,
+    bids,
+    highestBid,
+    owners,
+    lastTokenId: null, // fix this
+  };
 };
+
+async function getBid(bid: Bid, owners: string[]) {
+  // get the bid amount
+  let bidAmount = BigNumber.from(bid.amount);
+  // format the bid amount
+  bid.amount = utils.formatEther(bidAmount);
+  // get the number of owned tokens
+  const ownedTokens = getNumberOfOwnedTokens(bid.bidder.toLowerCase(), owners);
+  // add the number of owned tokens to the bid
+  bid.ownedTokens = ownedTokens;
+  // get the user data for the bidder
+  const user = await farcaster.lookupUserByVerification(bid.bidder);
+  // add the user data to the bid
+  if (user) {
+    bid.user = user;
+  } else {
+    // if no farcaster user found, try to get ens data
+    const ens = await getEns(bid.bidder);
+    // if ens data found, use it
+    if (ens?.ens) {
+      bid.user = {
+        username: ens?.ens,
+        pfp: { url: ens?.avatar },
+      };
+    } else {
+      // if no ens data found, use the bidder address
+      let bidderUsername = abbreviateAddress(bid.bidder);
+      bid.user = {
+        pfp: { url: "/placeholder.png" },
+        username: bidderUsername,
+        displayName: bidderUsername,
+      };
+    }
+  }
+  // return the bid
+  return bid;
+}
 
 export const getPurpleMembers = async (): Promise<FarcasterUser[]> => {
   try {
@@ -167,3 +196,43 @@ export const getNumberOfOwnedTokens = (owner: string, owners: any[]): number => 
   }
   return ownedTokens;
 };
+
+const query = (tokenId?: number) => `
+{
+  dao(id: "${DAOAddress}") {
+    id
+    owners(orderBy: daoTokenCount, orderDirection: desc) {
+      id
+      daoTokenCount
+    }
+    ${
+      tokenId
+        ? `tokens(where: {tokenId: ${tokenId ?? undefined}}) {`
+        : `tokens(first: 1, orderDirection: desc, orderBy: tokenId) {`
+    }
+      tokenId 
+      id
+      name
+      image
+      auction {
+        id
+        highestBid {
+          id
+          bidder
+          bidTime
+          amount
+        }
+        startTime
+        settled
+        endTime
+        bids(orderBy: amount, orderDirection: desc) {
+          id
+          bidder
+          amount
+          bidTime
+        }
+      }
+    }
+  }
+}
+`;
