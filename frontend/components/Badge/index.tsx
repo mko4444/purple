@@ -1,6 +1,6 @@
-export default function Badge({ children }: { children: React.ReactNode }) {
+export default function Badge({ children, style }: { children: React.ReactNode; style?: any }) {
   return (
-    <div className="badge" style={{ whiteSpace: "nowrap" }}>
+    <div className="badge" style={{ whiteSpace: "nowrap", ...style }}>
       {children}
     </div>
   );
