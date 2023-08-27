@@ -1,0 +1,19 @@
+@mixin shimmer-animation {
+  background: linear-gradient(to right, #8465cc10 0%, #8465cc25 50%, #8465cc10 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.25s infinite linear;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+}
+
+.shimmer-loader {
+  @include shimmer-animation;
+  cursor: not-allowed;
+}

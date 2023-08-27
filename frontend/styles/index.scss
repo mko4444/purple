@@ -6,7 +6,10 @@
 @import "../components/Badge";
 @import "../components/OpenMarker";
 @import "../components/InfoSection";
+@import "../components/Shimmer";
 @import "../components/Footer";
+
+@import "../app/members";
 
 span,
 label,
@@ -96,7 +99,7 @@ button {
 .page {
   max-width: 840px;
   margin: 0 auto;
-  padding-top: 2rem;
+  min-height: 100vh;
 }
 
 .flex {
@@ -106,4 +109,13 @@ button {
 .disabled {
   pointer-events: none;
   opacity: 0.66;
+}
+
+.line-1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
 }

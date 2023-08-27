@@ -2,7 +2,6 @@ import { User } from "@standard-crypto/farcaster-js";
 import { DAOAddress, nounsBuilderGraphURL } from "./consts";
 
 import farcaster from "./farcaster";
-import { useEnsAvatar, useEnsName } from "wagmi";
 import abbreviateAddress from "@/util/abbreviateAddress";
 
 interface FarcasterUser {
@@ -11,10 +10,7 @@ interface FarcasterUser {
   daoTokenCount: number;
 }
 
-export const tap = async <T>(
-  value: T,
-  cb: (value: T) => Promise<unknown>
-): Promise<T> => {
+export const tap = async <T>(value: T, cb: (value: T) => Promise<unknown>): Promise<T> => {
   await cb(value);
   return value;
 };
@@ -28,6 +24,16 @@ export const getMembers = async (): Promise<(User | undefined)[]> => {
       farcasterUser = await farcaster.lookupUserByVerification(member.address);
       if (!farcasterUser) {
         let username = member.address;
+
+        const ens = await getEns(member.address);
+
+        if (ens?.ens) {
+          farcasterUser = {
+            username: ens?.ens,
+            pfp: { url: ens?.avatar },
+          };
+        }
+
         if (username.length > 10) {
           username = abbreviateAddress(username);
         }
@@ -42,6 +48,10 @@ export const getMembers = async (): Promise<(User | undefined)[]> => {
       };
     })
   );
+};
+
+export const getEns = async (address: `0x${string}`) => {
+  return fetch(`https://ensdata.net/${address.toLowerCase()}`).then((res) => res.json());
 };
 
 export const getAuction = async () => {
@@ -149,14 +159,9 @@ export const getGraphOwnerAddress = (owner: string) => {
 @return number
 Takes in an address and returns how many tokens they own
 */
-export const getNumberOfOwnedTokens = (
-  owner: string,
-  owners: any[]
-): number => {
+export const getNumberOfOwnedTokens = (owner: string, owners: any[]): number => {
   let ownedTokens = 0;
-  const ownerIndex = owners.findIndex(
-    (o) => getGraphOwnerAddress(o.id) === owner
-  );
+  const ownerIndex = owners.findIndex((o) => getGraphOwnerAddress(o.id) === owner);
   if (ownerIndex !== -1) {
     ownedTokens = owners[ownerIndex].daoTokenCount;
   }

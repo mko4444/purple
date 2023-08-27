@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 
 import Dialog from "../Dialog";
 import { ConnectKitButton } from "connectkit";
-import { utils } from "ethers";
 import LoadingIndicator from "../LoadingIndicator.tsx";
 import {
   createBid,
@@ -97,7 +96,7 @@ export default function Auction({}: {}) {
             <div className="auction--row w-100">
               <input
                 value={currentBid}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   console.log(e.target.value);
                   setCurrentBid(e.target.value);
                 }}

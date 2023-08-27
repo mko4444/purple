@@ -64,18 +64,6 @@ export const getProvider = async () => {
   return provider;
 };
 
-async function estimateGas(transactionObj) {
-  let gas;
-  try {
-    gas = parseInt((await web3.eth.estimateGas(transactionObj)) * 1.1);
-  } catch (err) {
-    console.log(err);
-    gas = 10000000;
-  }
-  console.log(gas);
-  return gas;
-}
-
 export const createBid = async (
   address: string, // user's address
   bidAmount: number,
@@ -87,6 +75,7 @@ export const createBid = async (
     console.log("Provider or MetaMask not detected");
     return;
   }
+
   let auctionAddress =
     process.env.NEXT_PUBLIC_IS_TEST !== "true"
       ? auctionHouseContractAddress
