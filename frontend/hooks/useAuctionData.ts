@@ -13,7 +13,7 @@ export const useAuctionData = (tokenId?: number) => {
   // define increment function
   const incrementToken = () =>
     tokenId && auction?.lastTokenId > tokenId && push(`/${parseInt(auction?.tokenId, 10) + 1}`);
-  const decrementToken = () => tokenId && tokenId > 0 && push(`/${parseInt(auction?.tokenId) - 1}`);
+  const decrementToken = () => auction?.tokenId > 0 && push(`/${parseInt(auction?.tokenId) - 1}`);
   // return the auction data
   return {
     auction,

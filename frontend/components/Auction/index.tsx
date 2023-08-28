@@ -3,20 +3,23 @@
 import { arrowLeft, arrowRight } from "@/svg";
 import day from "lib/day";
 
-import { useAccount, useConnect, useContractWrite } from "wagmi";
 import { useCountdown } from "@/hooks/useCountdown";
+import { useAccount } from "wagmi";
 
 import Image from "next/image";
 import Badge from "@/components/Badge";
 import { londrina } from "@/util/fonts";
 
 import { useAuctionData } from "@/hooks/useAuctionData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Dialog from "../Dialog";
 import { ConnectKitButton } from "connectkit";
 import LoadingIndicator from "../LoadingIndicator.tsx";
 import dayjs from "lib/day";
+import Link from "next/link";
+
+const revalidate = 1000;
 
 export default function Auction({ tokenId }: { tokenId?: number }) {
   const [dialogOpen] = useState<boolean>(false);
@@ -31,12 +34,10 @@ export default function Auction({ tokenId }: { tokenId?: number }) {
     .month(10)
     .year(2022)
     .add(auction?.tokenId ?? tokenId, "day");
-  const todaysDate = dayjs();
-  const isToday = dayjs(currentDay).format("MMM Do, YYYY") === dayjs(todaysDate).format("MMM Do, YYYY");
 
   return (
     <div className="auction">
-      {!isValidating && auction ? (
+      {!isValidating || auction ? (
         <div className="auction--grid">
           <div>
             <div className="auction--token" />
@@ -57,7 +58,7 @@ export default function Auction({ tokenId }: { tokenId?: number }) {
                 }}
                 className="auction--nav-button"
                 style={
-                  isToday
+                  !tokenId || tokenId >= auction.lastTokenId
                     ? {
                         pointerEvents: "none",
                         opacity: 0.5,
@@ -67,6 +68,11 @@ export default function Auction({ tokenId }: { tokenId?: number }) {
               >
                 {arrowRight}
               </button>
+              {tokenId && tokenId != auction.latestTokenId && (
+                <Link href="/">
+                  <Badge>Latest</Badge>
+                </Link>
+              )}
               <div />
               <label>{day(currentDay).format("MMM Do, YYYY")}</label>
             </div>

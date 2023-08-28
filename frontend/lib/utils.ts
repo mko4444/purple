@@ -78,6 +78,7 @@ export const getAuction = async (tokenId?: number) => {
   // parse the data
   const { auction, ...data } = auctions?.data?.dao?.tokens?.[0] ?? null;
   const owners = auctions?.data?.dao?.owners ?? null;
+  const lastTokenId = parseInt(auctions?.data?.dao?.lastToken?.[0]?.tokenId, 10) ?? null;
   // if there is no auction, return null
   if (!auction) return null;
   // format the bids
@@ -92,7 +93,7 @@ export const getAuction = async (tokenId?: number) => {
     bids,
     highestBid,
     owners,
-    lastTokenId: null, // fix this
+    lastTokenId,
   };
 };
 
@@ -205,11 +206,12 @@ const query = (tokenId?: number) => `
       id
       daoTokenCount
     }
-    ${
+    lastToken: tokens(first: 1, orderDirection: desc, orderBy: tokenId) {
       tokenId
-        ? `tokens(where: {tokenId: ${tokenId ?? undefined}}) {`
-        : `tokens(first: 1, orderDirection: desc, orderBy: tokenId) {`
     }
+    tokens(${
+      tokenId ? `where: {tokenId: ${tokenId ?? undefined}}` : `first: 1, orderDirection: desc, orderBy: tokenId`
+    }) {
       tokenId 
       id
       name
